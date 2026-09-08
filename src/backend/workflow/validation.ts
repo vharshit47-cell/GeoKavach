@@ -1,0 +1,12 @@
+import { HAZARDS, type CaseInput, type SiteInput } from "../../shared/workflow/model";
+export class WorkflowError extends Error { constructor(message:string,public status=400){super(message);} }
+function obj(v:unknown):Record<string,unknown>{if(!v||typeof v!=="object"||Array.isArray(v))throw new WorkflowError("An object is required");return v as Record<string,unknown>;}
+function num(v:unknown,label:string,min:number,max:number,integer=true){if(typeof v!=="number"||!Number.isFinite(v)||v<min||v>max||(integer&&!Number.isInteger(v)))throw new WorkflowError(`${label} must be ${integer?"a whole number ":""}between ${min} and ${max}`);return v;}
+function text(v:unknown,label:string,min=2,max=200){if(typeof v!=="string"||v.trim().length<min||v.trim().length>max)throw new WorkflowError(`${label} must contain ${min}–${max} characters`);return v.trim();}
+function common(v:Record<string,unknown>){
+ const assessedAt=text(v.assessedAt,"Assessment date",10,10);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(assessedAt)||!Number.isFinite(Date.parse(assessedAt))||new Date(assessedAt).toISOString().slice(0,10)!==assessedAt||Date.parse(assessedAt)>Date.now())throw new WorkflowError("Assessment date must be a valid date, not in the future");
+ return {name:text(v.name,"Name"),latitude:num(v.latitude,"Latitude",6,38,false),longitude:num(v.longitude,"Longitude",68,98,false),evidence:text(v.evidence,"Evidence reference",10,1000),assessedAt,...(v.id?{id:text(v.id,"Record ID",1,80),version:num(v.version,"Version",1,1e9)}:{})};
+}
+export function parseCase(input:unknown):CaseInput{const v=obj(input),hazards=obj(v.hazards);const population=num(v.population,"Population",1,1000000);return {...common(v),population,vulnerable:num(v.vulnerable,"Vulnerable people",0,population),history:num(v.history,"Disasters in the last 10 years",0,100),hazards:Object.fromEntries(HAZARDS.map(h=>[h,num(hazards[h],h,0,5)])) as CaseInput["hazards"]};}
+export function parseSite(input:unknown):SiteInput{const v=obj(input);if(typeof v.verified!=="boolean")throw new WorkflowError("Verification status is required");const values={land:num(v.land,"Land capacity",0,1000000),water:num(v.water,"Water capacity",0,1000000),sanitation:num(v.sanitation,"Sanitation capacity",0,1000000),shelter:num(v.shelter,"Shelter capacity",0,1000000)};return {...common(v),...values,occupied:num(v.occupied,"Baseline occupancy",0,Math.min(...Object.values(values))),hazard:num(v.hazard,"Site hazard",0,5),verified:v.verified};}

@@ -1,0 +1,8 @@
+id,name,district,lat,lon,land_hectares,hazard_score,water_score,road_score,healthcare_score,education_score,data_confidence
+1,Gauchar Site A,Chamoli,30.4083,79.6900,12,18,90,88,78,82,HIGH
+2,Gopeshwar Safe Extension,Chamoli,30.4050,79.3020,8.7,20,88,90,86,84,HIGH
+3,Karnaprayag Plateau,Chamoli,30.2470,79.1850,7.6,22,84,86,80,78,MEDIUM
+4,Pipalkoti Terrace,Chamoli,30.4100,79.3970,7,21,82,79,76,74,MEDIUM
+5,Nandprayag Ridge,Chamoli,30.3460,79.2860,6.2,19,86,82,72,76,MEDIUM
+6,Pokhari Community Zone,Chamoli,30.2220,79.1810,5,24,78,76,70,73,MEDIUM
+7,Adibadri Valley Site,Chamoli,30.0610,79.2590,4.2,26,80,74,68,71,LOW

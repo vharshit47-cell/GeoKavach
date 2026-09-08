@@ -1,0 +1,107 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "hazard": "LANDSLIDE",
+        "label": "Upper Alaknanda landslide susceptibility (demo)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.45,
+              30.38
+            ],
+            [
+              79.91,
+              30.43
+            ],
+            [
+              79.94,
+              30.80
+            ],
+            [
+              79.55,
+              30.76
+            ],
+            [
+              79.45,
+              30.38
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hazard": "FLOOD",
+        "label": "Alaknanda flood exposure corridor (demo)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.14,
+              30.16
+            ],
+            [
+              79.72,
+              30.44
+            ],
+            [
+              79.69,
+              30.51
+            ],
+            [
+              79.10,
+              30.24
+            ],
+            [
+              79.14,
+              30.16
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hazard": "CLOUDBURST",
+        "label": "High-intensity rainfall pocket (demo)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.30,
+              30.24
+            ],
+            [
+              79.62,
+              30.24
+            ],
+            [
+              79.66,
+              30.48
+            ],
+            [
+              79.35,
+              30.52
+            ],
+            [
+              79.30,
+              30.24
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

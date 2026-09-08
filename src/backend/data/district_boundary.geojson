@@ -1,0 +1,14 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Chamoli", "state": "Uttarakhand", "source": "Simplified demo boundary" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[79.02,29.93],[79.74,29.98],[80.03,30.35],[80.05,30.82],[79.72,30.93],[79.25,30.82],[79.03,30.47],[79.02,29.93]]]
+      }
+    }
+  ]
+}
+

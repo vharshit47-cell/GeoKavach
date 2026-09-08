@@ -1,0 +1,12 @@
+node_modules
+.next
+*.tsbuildinfo
+out
+.env
+.env.*
+!.env.example
+npm-debug.log*
+.DS_Store
+tools/**/__pycache__/
+.local/
+src/backend/data/groundwater/

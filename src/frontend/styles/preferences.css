@@ -1,0 +1,65 @@
+:root { color-scheme: light; --surface-soft:#f5f8f8; }
+html.dark { color-scheme:dark; --ink:#e4edf1; --muted:#a4b6bf; --line:#344a56; --line-soft:#293e49; --surface:#182b35; --surface-soft:#203741; --canvas:#10212b; --navy:#d4e8ef; --navy-2:#276c83; --blue:#57acc6; --green:#70c6a3; --shadow:0 5px 22px #0002; }
+.app-header { display:flex; flex-wrap:wrap; gap:8px 24px; padding:12px 24px 0; background:var(--surface); }
+.app-brand { flex:1; min-width:230px; }
+.header-context { margin-left:auto; order:2; gap:7px; }
+.primary-nav { order:3; width:100%; height:44px; overflow-x:auto; border-top:1px solid var(--line-soft); }
+.primary-nav a { flex:1; font-size:12px; padding:0 16px; color:var(--muted); }
+.app-brand small { font-size:11px; }
+.language-button,.theme-select { min-height:36px; padding:6px 10px; border:1px solid var(--line); border-radius:7px; color:var(--ink); background:var(--surface); font-size:13px; cursor:pointer; }
+.district-chip { max-width:180px; overflow:hidden; background:var(--surface-soft); color:var(--ink); }
+.district-chip span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.icon-button,.secondary-button { background:var(--surface); color:var(--ink); }
+.app-footer { background:var(--surface); color:var(--muted); font-size:11px; padding-bottom:90px; }
+.primary-button,.secondary-button { font-size:13px; min-height:40px; }
+.page-heading p { font-size:13px; }
+.demo-notice { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; padding:12px 16px; border:1px solid #b89344; border-left-width:4px; border-radius:8px; background:var(--surface); font-size:13px; line-height:1.6; }
+.demo-notice strong { color:#946715; white-space:nowrap; }
+.demo-notice a { color:var(--blue); text-decoration:underline; margin-left:auto; }
+.account-grid { display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:22px; max-width:1100px; margin:0 auto; }
+.account-card { padding:26px; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:var(--shadow); font-size:14px; line-height:1.6; min-width:0; }
+.account-card h2 { font-size:18px; margin:0 0 18px; }
+.account-card h2:not(:first-child) { margin-top:28px; }
+.account-card p { color:var(--muted); }
+.auth-card { max-width:510px; margin:0 auto; }
+.auth-card > svg { color:var(--blue); margin-bottom:12px; }
+.account-form { display:flex; flex-direction:column; gap:16px; }
+.account-form label { display:flex; flex-direction:column; gap:6px; font-weight:600; }
+.account-form label small { font-weight:400; color:var(--muted); }
+.account-form :is(input,select) { min-height:43px; width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:7px; background:var(--canvas); color:var(--ink); font-size:14px; }
+.account-form .account-check { flex-direction:row; align-items:center; font-weight:400; margin:9px 0; }
+.account-check input { width:18px; min-height:18px; accent-color:var(--navy-2); }
+.account-form fieldset { border:1px solid var(--line); padding:12px 16px; border-radius:8px; }
+.account-form legend { padding:0 6px; font-weight:600; }
+.account-notice { margin:12px 0 20px; padding:12px 16px; background:var(--surface-soft); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-size:14px; line-height:1.6; }
+.account-links { display:flex; flex-wrap:wrap; align-items:center; gap:12px 18px; margin-top:20px; }
+.account-links a { color:var(--blue); text-decoration:underline; text-underline-offset:3px; }
+.saved-location { padding:16px 0; border-bottom:1px solid var(--line); }
+.saved-location p { margin:4px 0; }
+button:disabled { opacity:.55; cursor:not-allowed; }
+/* Keep the existing planning tools readable in both themes. */
+.dark :is(.app-header,.app-footer,.table-toolbar,.search-field,.filter-select,.data-table th,.relocation-rows > button,.detail-drawer,.state-card,.habitation-select select,.recommendation-grid > div,.map-legend,.map-tool-rail button,.active-route-card,.map-card-heading,.updated-chip,.method-chip,.risk-comparison > div,.site-capacity > div,.site-metric-grid > div,.scenario-control output) { background:var(--surface); color:var(--ink); }
+.dark :is(.data-table tbody tr:hover,.relocation-rows > button.active,.relocation-rows > button:hover,.site-capacity > div,.recommendation-card,.explanation-card,.detail-stat-grid > div,.impact-card > div,.impact-card.after > div,.change-callout,.summary-focus,.priority-callout,.risk-hero,.scenario-icon,.risk-filter-grid button,.filter-section,.risk-filter-grid button.active) { background:var(--surface-soft); }
+.dark :is(.table-toolbar input,.filter-select select,.primary-nav a:hover,.primary-nav a.active) { color:var(--ink); }
+.dark :is(.data-table td,.data-table th,.content-card p,.content-card small,.panel-card small,.panel-card p,.detail-drawer p,.detail-drawer small,.summary-main > span,.summary-main > small,.filter-note,.filter-section h3,.scenario-copy small,.site-metric-grid span,.drawer-meta,.route-facts,.map-card-heading > span) { color:var(--muted); }
+.dark :is(.detail-drawer strong,.content-card strong,.panel-card strong,.content-card h2,.content-card h3,.detail-drawer h3,.site-card-head h2,.route-title strong) { color:var(--ink); }
+.dark .demo-notice strong { color:#f0c975; }
+.dark .recharts-cartesian-axis-tick-value { fill:var(--muted); }
+.dark .recharts-default-tooltip { background:var(--surface)!important; border-color:var(--line)!important; color:var(--ink)!important; }
+.dark .recharts-tooltip-item { color:var(--ink)!important; }
+/* OSM cartography is kept in its original colours; surrounding controls adapt. */
+.dark :is(.leaflet-popup-content-wrapper,.leaflet-popup-tip,.leaflet-tooltip) { background:#182b35; color:#e4edf1; border-color:#526975; }
+.dark .leaflet-control-attribution { background:#fff; color:#24353c; }
+.dark .leaflet-control-attribution a { color:#126281; }
+.data-table :is(td,th),.table-result-note,.table-toolbar input,.filter-select select,.scenario-copy strong,.route-names span { font-size:12px; }
+.data-table td > small,.filter-select span,.site-metric-grid span,.site-footer,.drawer-meta,.assumption-list p,.scenario-copy small { font-size:11px; }
+.data-table td > strong { font-size:13px; }
+.tone-badge { font-size:11px; }
+.summary-main > small { max-width:none; font-size:10px; white-space:normal; }
+.summary-main > span,.card-heading p,.map-card-heading p,.filter-note,.explanation-card p { font-size:12px; }
+.section-kicker,.page-heading > div:first-child > span { font-size:10px; }
+.detail-drawer :is(p,span,dt,dd,small),.content-card :is(.site-capacity span,.site-metric-grid strong,.assumption-list p,.empty-result p,.change-callout p) { font-size:12px; }
+.detail-drawer .tone-badge { font-size:11px; }
+.account-card,.demo-notice { overflow-wrap:anywhere; }
+@media(max-width:780px) { .app-header{padding:10px 12px 0;gap:10px}.app-brand{min-width:155px}.header-context{gap:5px}.header-context .district-chip{display:none}.header-context .icon-button{width:32px;height:34px}.primary-nav{height:44px}.primary-nav a{font-size:11px;padding:0 10px}.account-grid{grid-template-columns:1fr;gap:16px}.account-card{padding:20px}.app-brand small{display:none}.theme-select{max-width:86px}.language-button{padding:6px}.page-shell{padding-bottom:100px}.app-footer{padding-bottom:94px}.demo-notice{font-size:12px} }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }

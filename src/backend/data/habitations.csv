@@ -1,0 +1,43 @@
+id,name,district,state,lat,lon,population,elderly_pct,children_pct,landslide_risk,flood_risk,cloudburst_risk,past_disasters,road_access,data_confidence
+1,Raini,Chamoli,Uttarakhand,30.4820,79.6900,850,25,32,96,92,88,5,35,HIGH
+2,Tapovan,Chamoli,Uttarakhand,30.4930,79.6260,720,22,30,85,98,94,4,30,HIGH
+3,Malari,Chamoli,Uttarakhand,30.6550,79.8870,430,24,31,94,82,90,5,25,MEDIUM
+4,Urgam,Chamoli,Uttarakhand,30.4910,79.4720,340,23,30,91,84,88,5,28,MEDIUM
+5,Joshimath Ward 4,Chamoli,Uttarakhand,30.5560,79.5630,1250,13,19,99,94,92,3,62,HIGH
+6,Lata,Chamoli,Uttarakhand,30.5050,79.7040,460,15,22,96,91,88,3,58,MEDIUM
+7,Bhyundar,Chamoli,Uttarakhand,30.7110,79.5930,380,14,21,94,93,86,3,60,MEDIUM
+8,Govindghat,Chamoli,Uttarakhand,30.6220,79.5580,610,12,18,93,96,84,3,64,HIGH
+9,Pandukeshwar,Chamoli,Uttarakhand,30.6480,79.5450,320,16,22,82,76,72,2,55,HIGH
+10,Helang,Chamoli,Uttarakhand,30.5190,79.5140,300,15,23,84,72,70,2,57,MEDIUM
+11,Karanprayag Fringe,Chamoli,Uttarakhand,30.2630,79.2100,280,14,20,68,84,70,2,61,HIGH
+12,Nandprayag,Chamoli,Uttarakhand,30.3320,79.3150,340,16,24,77,82,75,2,54,HIGH
+13,Pipalkoti,Chamoli,Uttarakhand,30.4290,79.4310,230,13,20,79,74,69,2,60,HIGH
+14,Ghat,Chamoli,Uttarakhand,30.2570,79.4470,290,18,25,83,68,72,2,48,MEDIUM
+15,Pokhari,Chamoli,Uttarakhand,30.2340,79.2180,330,14,21,75,72,67,2,58,HIGH
+16,Suraithota,Chamoli,Uttarakhand,30.4370,79.7010,270,19,26,80,65,78,2,46,MEDIUM
+17,Birahi,Chamoli,Uttarakhand,30.4020,79.4190,250,13,19,73,78,66,2,63,HIGH
+18,Chamoli Town Fringe,Chamoli,Uttarakhand,30.4040,79.3210,310,12,18,64,80,70,2,68,HIGH
+19,Deval,Chamoli,Uttarakhand,30.2860,79.5710,240,17,23,79,62,69,2,50,MEDIUM
+20,Tharali,Chamoli,Uttarakhand,30.0790,79.4970,220,15,22,70,76,67,2,57,HIGH
+21,Gopeshwar,Chamoli,Uttarakhand,30.4160,79.3280,680,11,17,48,52,45,1,82,HIGH
+22,Gauchar,Chamoli,Uttarakhand,30.2890,79.1620,740,10,16,44,58,43,1,85,HIGH
+23,Karnaprayag,Chamoli,Uttarakhand,30.2580,79.2180,810,12,18,52,56,48,1,78,HIGH
+24,Narayanbagar,Chamoli,Uttarakhand,30.1340,79.3980,390,15,20,60,48,52,1,65,MEDIUM
+25,Adibadri,Chamoli,Uttarakhand,30.0790,79.2870,260,14,19,47,45,40,1,74,MEDIUM
+26,Nonna,Chamoli,Uttarakhand,30.1920,79.2480,180,17,21,56,42,49,1,62,LOW
+27,Kulsari,Chamoli,Uttarakhand,30.1160,79.5130,210,16,23,58,46,54,1,59,MEDIUM
+28,Gwaldam,Chamoli,Uttarakhand,30.0270,79.5700,320,13,20,49,43,46,1,72,HIGH
+29,Lohajung,Chamoli,Uttarakhand,30.1640,79.6120,190,14,22,61,44,55,1,60,MEDIUM
+30,Wan,Chamoli,Uttarakhand,30.1770,79.6700,170,18,25,58,38,50,1,52,LOW
+31,Mandal,Chamoli,Uttarakhand,30.4540,79.3020,270,12,19,52,44,48,1,70,HIGH
+32,Sagar,Chamoli,Uttarakhand,30.4830,79.3510,210,14,20,55,46,50,1,67,MEDIUM
+33,Chopta,Chamoli,Uttarakhand,30.4880,79.1650,150,9,13,42,34,38,0,82,HIGH
+34,Auli,Chamoli,Uttarakhand,30.5290,79.5660,120,8,12,46,30,42,0,88,HIGH
+35,Bamani,Chamoli,Uttarakhand,30.7350,79.4930,140,12,18,50,38,44,1,71,MEDIUM
+36,Mana,Chamoli,Uttarakhand,30.7730,79.4950,160,10,15,54,32,48,1,73,MEDIUM
+37,Niti,Chamoli,Uttarakhand,30.7630,79.8610,130,15,20,57,35,52,1,64,LOW
+38,Gamshali,Chamoli,Uttarakhand,30.7350,79.8160,110,16,22,59,36,54,1,58,LOW
+39,Langasu,Chamoli,Uttarakhand,30.2240,79.2260,250,11,16,43,49,40,1,79,HIGH
+40,Simli,Chamoli,Uttarakhand,30.2070,79.2580,290,10,15,40,46,38,0,84,HIGH
+41,Maithana,Chamoli,Uttarakhand,30.3670,79.3100,200,13,18,48,51,44,1,76,MEDIUM
+42,Sonla,Chamoli,Uttarakhand,30.3740,79.3750,180,14,19,53,47,49,1,69,MEDIUM

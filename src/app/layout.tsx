@@ -10,7 +10,7 @@ import { LocationSafetyProvider } from "@/components/LocationSafetyManager";
 import { FloatingSafetyTools } from "@/components/FloatingSafetyTools";
 
 export const metadata: Metadata = {
-  title: "SurakshaSetu | India Disaster Intelligence",
+  title: "GeoKavach | India Disaster Intelligence",
   description: "SIH26191 habitation risk assessment, hazard mapping, carrying capacity and relocation decision support.",
 };
 

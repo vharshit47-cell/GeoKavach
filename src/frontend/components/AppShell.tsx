@@ -20,7 +20,7 @@ export function AppShell({ children, title, description, actions }: { children: 
         {demo && <aside className="demo-notice"><strong>{tr("Demo Dataset")}</strong><span>{t("app.demoNotice")}</span></aside>}
         {children}
       </main>
-      <footer className="app-footer"><span>SURAKSHASETU · DECISION SUPPORT</span><span>{t("app.disclaimer")}</span></footer>
+      <footer className="app-footer"><span>GEOKAVACH · DECISION SUPPORT</span><span>{t("app.disclaimer")}</span></footer>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import { Fragment, memo, useEffect, useMemo, useState } from "react";
-import { Circle, CircleMarker, GeoJSON, MapContainer, Polygon, Polyline, TileLayer, Tooltip, ZoomControl, useMap, useMapEvents } from "react-leaflet";
+import { Circle, CircleMarker, GeoJSON, MapContainer, Polygon, Polyline, TileLayer, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import type { LeafletEvent, Path } from "leaflet";
 import type { BoundaryData, DisasterAlert, EarthquakeEvent, LocationIntelligence, LocationPoint, SourceResult } from "@/types/intelligence";
 import { risk, type CaseRecord, type SiteRecord } from "@/shared/workflow/model";
@@ -115,7 +115,6 @@ function Canvas(props: Props) {
   const [tileError, setTileError] = useState(false);
   const onViewport = useMemo(() => (next: Viewport) => { setView(next); props.onViewport(next); }, [props.onViewport]);
   return <MapContainer center={[22.5, 80.5]} zoom={4.5} zoomSnap={.5} minZoom={3} maxZoom={18} className="atlas-leaflet" zoomControl={false} scrollWheelZoom={true}>
-    <ZoomControl position="bottomleft" />
     <Interaction location={props.location} focus={props.focus} resetKey={props.resetKey} onLocation={props.onLocation} onViewport={onViewport} />
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' eventHandlers={{ tileerror: () => setTileError(true), tileload: () => setTileError(false) }} />
     <RiskLayers {...props} view={view} />

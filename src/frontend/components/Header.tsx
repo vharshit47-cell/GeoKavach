@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { ShieldCheck, ChevronDown, UserRound } from "lucide-react";
 import { usePreferences } from "./AppPreferences";
 
-const navigation = [["/", "Home"], ["/map", "Live Map"], ["/alerts", "Alerts"], ["/relocation", "Relocation"]];
+const navigation = [["/", "Home"], ["/dashboard", "Weather"], ["/map", "Live Map"], ["/alerts", "Alerts"], ["/relocation", "Relocation"], ["/resources", "How it works"]];
 
 export function Header() {
   const path = usePathname();

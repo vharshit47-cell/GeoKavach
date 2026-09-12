@@ -15,6 +15,7 @@ type SafetyContextValue = {
   selectMapLocation: (point: LocationPoint) => void;
   data: LocationIntelligence | null; loading: boolean; error: boolean; refresh: () => void;
   nationalAlerts: SourceResult<DisasterAlert[]> | null; nationalEarthquakes: SourceResult<EarthquakeEvent[]> | null;
+  nationalLoading: boolean; nationalError: boolean;
   locateOnce: () => void; locating: boolean; locationMessage: string;
   notifications: boolean; enableNotifications: () => Promise<void>; notificationMessage: string;
 };
@@ -26,6 +27,8 @@ export function LocationSafetyProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<LocationIntelligence | null>(null);
   const [nationalAlerts, setNationalAlerts] = useState<SourceResult<DisasterAlert[]> | null>(null);
   const [nationalEarthquakes, setNationalEarthquakes] = useState<SourceResult<EarthquakeEvent[]> | null>(null);
+  const [nationalLoading, setNationalLoading] = useState(true);
+  const [nationalError, setNationalError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [revision, setRevision] = useState(0);
@@ -54,6 +57,25 @@ export function LocationSafetyProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Map coverage must not be cancelled or narrowed by GPS or a selected point.
+    const controller = new AbortController();
+    setNationalLoading(true);
+    setNationalError(false);
+    const signal = AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]);
+    const alerts = fetchLive<SourceResult<DisasterAlert[]>>("/api/alerts", signal)
+      .then(result => { if (!controller.signal.aborted) setNationalAlerts(result); });
+    const quakes = fetchLive<SourceResult<EarthquakeEvent[]>>("/api/earthquakes", signal)
+      .then(result => { if (!controller.signal.aborted) setNationalEarthquakes(result); });
+    Promise.allSettled([alerts, quakes]).then(results => {
+      if (controller.signal.aborted) return;
+      setNationalError(results.some(result => result.status === "rejected"));
+      setNationalLoading(false);
+    });
+    return () => controller.abort();
+  }, [revision]);
+
+  useEffect(() => {
+    if (!location) { setLoading(false); setError(false); return; }
     const controller = new AbortController();
     setLoading(true);
     setError(false);
@@ -66,18 +88,6 @@ export function LocationSafetyProvider({ children }: { children: ReactNode }) {
         .then((result) => { if (!controller.signal.aborted) setData(result); })
         .catch(() => { if (!controller.signal.aborted) { setError(true); setData(null); } })
         .finally(() => { window.clearTimeout(timeout); if (!controller.signal.aborted) setLoading(false); });
-    } else {
-      Promise.allSettled([
-        fetchLive<SourceResult<DisasterAlert[]>>("/api/alerts", controller.signal),
-        fetchLive<SourceResult<EarthquakeEvent[]>>("/api/earthquakes", controller.signal),
-      ]).then(([alerts, quakes]) => {
-        window.clearTimeout(timeout);
-        if (controller.signal.aborted) return;
-        setNationalAlerts(alerts.status === "fulfilled" ? alerts.value : null);
-        setNationalEarthquakes(quakes.status === "fulfilled" ? quakes.value : null);
-        setError(alerts.status === "rejected" || quakes.status === "rejected");
-        setLoading(false);
-      });
     }
     return () => { controller.abort(); window.clearTimeout(timeout); };
   }, [location, revision, notificationSettings.notification_radius_km]);
@@ -103,7 +113,7 @@ export function LocationSafetyProvider({ children }: { children: ReactNode }) {
     }
   }, [data, location, notificationSettings, t]);
 
-  const locateOnce = () => {
+  const locateOnce = useCallback(() => {
     if (!navigator.geolocation) { setLocationMessage("live.locationError"); return; }
     const requestId = ++locationRequest.current;
     setLocating(true);
@@ -114,8 +124,11 @@ export function LocationSafetyProvider({ children }: { children: ReactNode }) {
         if (locationRequest.current === requestId) { setLocating(false); setLocationMessage("live.locationError"); }
         return;
       }
+      if (locationRequest.current !== requestId) return;
+      setLocation(point);
+      setData(null);
       try {
-        const result = await fetchLive<SourceResult<LocationPoint[]>>(`/api/geocode?lat=${point.latitude}&lon=${point.longitude}`);
+        const result = await fetchLive<SourceResult<LocationPoint[]>>(`/api/geocode?lat=${point.latitude}&lon=${point.longitude}`, AbortSignal.timeout(10000));
         if (locationRequest.current === requestId) setLocation({ ...result.data[0], ...point });
       } catch { if (locationRequest.current === requestId) setLocation(point); }
       finally { if (locationRequest.current === requestId) { setLocating(false); setData(null); } }
@@ -124,7 +137,14 @@ export function LocationSafetyProvider({ children }: { children: ReactNode }) {
       setLocating(false);
       setLocationMessage(failure.code === 1 ? "live.locationDenied" : "live.locationError");
     }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 });
-  };
+  }, []);
+
+  const autoRequested = useRef(false);
+  useEffect(() => {
+    if (autoRequested.current) return;
+    autoRequested.current = true;
+    locateOnce();
+  }, [locateOnce]);
 
   const selectMapLocation = async (point: LocationPoint) => {
     const requestId = ++locationRequest.current;
@@ -149,7 +169,7 @@ export function LocationSafetyProvider({ children }: { children: ReactNode }) {
     } catch { setNotificationMessage("live.notifyUnsupported"); }
   };
 
-  return <SafetyContext.Provider value={{ location, selectLocation, selectMapLocation, data, loading, error, refresh: () => setRevision((n) => n + 1), nationalAlerts, nationalEarthquakes, locateOnce, locating, locationMessage, notifications: notificationSettings.browser_notifications_enabled, enableNotifications, notificationMessage }}>{children}</SafetyContext.Provider>;
+  return <SafetyContext.Provider value={{ location, selectLocation, selectMapLocation, data, loading: location ? loading : nationalLoading, error: location ? error : nationalError, refresh: () => setRevision((n) => n + 1), nationalAlerts, nationalEarthquakes, nationalLoading, nationalError, locateOnce, locating, locationMessage, notifications: notificationSettings.browser_notifications_enabled, enableNotifications, notificationMessage }}>{children}</SafetyContext.Provider>;
 }
 
 export function useLocationSafety() {

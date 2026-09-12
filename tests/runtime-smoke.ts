@@ -10,7 +10,10 @@ async function post(path:string,body:unknown,status=200) {
   assert.equal(r.status,status,path); return await r.json();
 }
 async function main() {
-  for(const path of ["/api/dashboard-summary","/api/habitations","/api/red-zones","/api/safe-sites","/api/relocation-plan"]) { const data=await get(path); assert.ok(Array.isArray(data)?data.every(v=>v.source==="Demo Dataset"):data.source==="Demo Dataset"); outcomes.push({path,status:200,provenance:"demo"}); }
+  for(const path of ["/api/dashboard-summary","/api/habitations","/api/red-zones","/api/safe-sites"]) { const data=await get(path); assert.ok(Array.isArray(data)?data.every(v=>v.source==="Demo Dataset"):data.source==="Demo Dataset"); outcomes.push({path,status:200,provenance:"demo"}); }
+  await get("/api/relocation-plan",405);
+  await post("/api/relocation-plan",{habitationId:"missing"},401);
+  outcomes.push({path:"/api/relocation-plan",get:405,guestPost:401});
   await get("/api/weather?lat=NaN&lon=77",400); await get("/api/earthquakes?lat=10",400); await get("/api/disaster-news?radius=99999",400); await get("/api/geocode?q=" ,400);
   await post("/api/simulate-risk",{habitation_id:1,rainfall:85,road_access:40,population_vulnerability:70});
   await post("/api/simulate-risk",{habitation_id:1,rainfall:101,road_access:40,population_vulnerability:70},400);

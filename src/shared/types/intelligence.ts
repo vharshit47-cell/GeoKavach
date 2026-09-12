@@ -2,7 +2,7 @@ import type { FeatureCollection, Geometry } from "geojson";
 
 export type EvidenceKind = "official" | "observed" | "reported" | "model-derived" | "historical" | "demo";
 export type Severity = "unknown" | "low" | "moderate" | "high" | "severe" | "extreme";
-export type HazardKind = "flood" | "landslide" | "earthquake" | "cyclone" | "fire" | "extreme-weather" | "other";
+export type HazardKind = "flood" | "landslide" | "earthquake" | "cloudburst" | "cyclone" | "fire" | "extreme-weather" | "other";
 export interface SourceResult<T> {
   data: T;
   status: "live" | "cached" | "stale" | "unavailable" | "historical";
@@ -32,6 +32,32 @@ export interface WeatherData {
 export interface EarthquakeEvent {
   id: string; source: "USGS"; kind: "observed"; magnitude: number; latitude: number; longitude: number;
   depthKm: number; time: string; place: string; sourceUrl: string; distanceKm?: number;
+}
+export interface DisasterOccurrence {
+  id: string;
+  hazardType: HazardKind;
+  title: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+  place: string;
+  occurredAt: string;
+  endedAt?: string;
+  source: "USGS" | "NASA EONET / GDACS" | "Government of India / PIB";
+  sourceUrl: string;
+  kind: "observed" | "reported" | "historical";
+  status: "recent" | "ongoing" | "ended" | "reference";
+  severity: Severity;
+  locationPrecision: "point" | "area-centroid";
+  magnitude?: number;
+  magnitudeUnit?: string;
+}
+export interface DisasterOccurrenceFeed {
+  data: DisasterOccurrence[];
+  status: "live" | "cached" | "stale" | "unavailable";
+  fetchedAt: string;
+  coverage: string;
+  sources: Array<{ name: string; status: SourceResult<unknown>["status"]; note: string }>;
 }
 export interface NewsArticle {
   id: string; kind: "reported"; title: string; source: string; sourceUrl: string;

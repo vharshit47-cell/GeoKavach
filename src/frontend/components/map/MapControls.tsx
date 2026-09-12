@@ -35,11 +35,10 @@ export function MapControls({ mode, setMode, hazard, setHazard, layers, setLayer
   const destinations = needle.length >= 2 ? sites.filter(item => item.name.toLowerCase().includes(needle)).slice(0, 4) : [];
   return <>
     <div className="atlas-topbar">
-      <div className="atlas-modes atlas-glass" aria-label="Map mode">{([
+      <details className="atlas-mode-menu atlas-glass"><summary>Map view</summary><div className="atlas-modes" aria-label="Map mode">{([
         ["exposure", "Exposure", Users], ["hazard", "Hazard", Waves], ["impact", "Impact", Activity],
-      ] as const).map(([key, label, Icon]) => <button key={key} aria-pressed={mode === key} className={mode === key ? "is-active" : ""} onClick={() => setMode(key)}><Icon size={14} />{label}</button>)}</div>
+      ] as const).map(([key, label, Icon]) => <button key={key} aria-pressed={mode === key} className={mode === key ? "is-active" : ""} onClick={() => setMode(key)}><Icon size={14} />{label}</button>)}</div></details>
       <div className="atlas-filter-group">
-        <label className="atlas-select atlas-glass"><span>Scenario</span><select aria-label="Scenario" value="current" onChange={() => {}}><option value="current">Current</option><option value="historical" disabled>Historical · unavailable</option></select></label>
         <label className="atlas-select atlas-glass"><span>Hazard</span><select aria-label="Hazard" value={hazard} onChange={event => setHazard(event.target.value as MapHazard)}>{HAZARD_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
       </div>
       <div className="atlas-search-wrap">
@@ -58,7 +57,7 @@ export function MapControls({ mode, setMode, hazard, setHazard, layers, setLayer
       <button className="atlas-glass" title="Use current location" aria-label="Use current location" disabled={locating} onClick={onLocate}><LocateFixed size={18} /></button>
       <details className="atlas-layers atlas-glass"><summary aria-label="Map layers"><Layers3 size={18} /><span>Layers</span></summary><div>
         {([
-          ["Hazard", [["alerts", "Official hazard extents"], ["earthquakes", "Earthquake observations"], ["weather", "Weather at selected point"]]],
+          ["Hazard", [["alerts", "Official warnings & extents"], ["earthquakes", "Earthquake observations"], ["weather", "Weather at selected point"]]],
           ["Exposure", [["habitations", "Assessed habitations"], ["facilities", "Reported infrastructure"]]],
           ["Planning", [["redZones", "Red-zone review candidates"], ["sites", "Assessed relocation sites"]]],
           ["Boundaries", [["states", "States"], ["districts", "Districts in selected state"]]],

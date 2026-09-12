@@ -1,10 +1,10 @@
 "use client";
 import { Fragment, memo, useEffect, useMemo, useState } from "react";
-import { Circle, CircleMarker, GeoJSON, MapContainer, Polygon, Polyline, TileLayer, Tooltip, ZoomControl, useMap, useMapEvents } from "react-leaflet";
-import type { LeafletEvent, Path } from "leaflet";
+import { Circle, CircleMarker, GeoJSON, MapContainer, Marker, Polygon, Polyline, Popup, TileLayer, Tooltip, ZoomControl, useMap, useMapEvents } from "react-leaflet";
+import { divIcon, type LeafletEvent, type Path } from "leaflet";
 import type { BoundaryData, DisasterAlert, EarthquakeEvent, LocationIntelligence, LocationPoint, SourceResult } from "@/types/intelligence";
 import { risk, type CaseRecord, type SiteRecord } from "@/shared/workflow/model";
-import { alertColor, caseValue, clusterAlerts, clusterCases, inViewport, numberLabel, riskStyle, type MapHazard, type MapLayers, type MapMode, type Selection, type Viewport } from "@/frontend/lib/map/presentation";
+import { alertColor, caseValue, clusterAlerts, clusterCases, inViewport, numberLabel, regionalAlertGroups, riskStyle, type MapHazard, type MapLayers, type MapMode, type Selection, type Viewport } from "@/frontend/lib/map/presentation";
 
 type Props = {
   location: LocationPoint | null; focus: (LocationPoint & { zoom?: number }) | null; resetKey: number; onLocation: (point: LocationPoint) => void;
@@ -72,6 +72,22 @@ function Hover({ title, children }: { title: string; children: React.ReactNode }
 }
 
 const EMPTY_CASES: CaseRecord[] = [];
+function RegionalWarnings({ group, onSelect }: { group: ReturnType<typeof regionalAlertGroups>[number]; onSelect: Props["onSelect"] }) {
+  const { region, records } = group;
+  const icon = useMemo(() => {
+    const label = document.createElement("div");
+    const name = document.createElement("strong");
+    name.textContent = `${region.name} · ${records.length}`;
+    const detail = document.createElement("span");
+    detail.textContent = "Regional warnings";
+    label.append(name, detail);
+    return divIcon({ html: label, className: "atlas-regional-warning", iconSize: [148, 44], iconAnchor: [74, 22] });
+  }, [region.name, records.length]);
+  return <Marker position={[region.latitude, region.longitude]} icon={icon} title={`Regional warnings for ${region.name} (${records.length})`}>
+    <Popup><div className="atlas-regional-warning-detail"><strong>{region.name} · regional warnings</strong><p>State reference only. Exact warning boundaries are unavailable; this marker is not a hazard location.</p>{records.map(alert => <button key={alert.id} onClick={() => onSelect({ kind: "alert", record: alert })}>{alert.title}<small>{alert.severity} · View warning</small></button>)}</div></Popup>
+  </Marker>;
+}
+
 function RiskLayers(props: Props & { view: Viewport | null }) {
   const { cases, sites, layers, hazard, mode, view, opacity, selection, onSelect, data } = props;
   const map = useMap();
@@ -82,9 +98,11 @@ function RiskLayers(props: Props & { view: Viewport | null }) {
   const hover = { mouseover: (event: LeafletEvent) => event.target.setStyle({ weight: 3 }), mouseout: (event: LeafletEvent) => event.target.setStyle({ weight: 1.5 }) };
   const alertOverview = props.alerts.filter(alert => alert.active);
   const alertBubbles = useMemo(() => clusterAlerts(props.alerts), [props.alerts]);
+  const regionalWarnings = useMemo(() => regionalAlertGroups(props.alerts), [props.alerts]);
   return <>
     {layers.states && props.states?.data && <BoundaryLayer result={props.states} onLocation={props.onLocation} selectedName={props.location?.state} />}
     {layers.districts && district && props.districts?.data && <BoundaryLayer result={props.districts} onLocation={props.onLocation} state={props.location?.state} selectedName={props.location?.district} />}
+    {layers.alerts && regionalWarnings.map(group => <RegionalWarnings key={group.region.name} group={group} onSelect={onSelect} />)}
     {layers.alerts && !district && alertBubbles.filter(group => inViewport(group, view)).map(group => <CircleMarker key={`alerts-${group.id}`} center={[group.latitude, group.longitude]} radius={17 + Math.sqrt(group.records.length) * 10} pathOptions={{ color: alertColor(group.severity), fillOpacity: opacity, weight: 1 }} eventHandlers={{ click: () => { map.flyTo([group.latitude, group.longitude], 8, { duration: .7 }); onSelect({ kind: "alert", record: group.records[0] }); } }}><Hover title={group.records[0].affectedArea || "Official warnings"}><p>{group.records.length} current warnings · {group.severity}</p><p>NDMA SACHET · bubble size: warning count</p><p>Click to inspect official extents</p></Hover></CircleMarker>)}
     {layers.alerts && district && alertOverview.slice(0, 250).map(alert => {
       const color = alertColor(alert.severity);

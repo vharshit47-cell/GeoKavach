@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { alertAnchor, caseValue, clusterCases, inViewport, relocationLink, riskStyle } from "../src/frontend/lib/map/presentation";
+import { alertAnchor, alertRegions, mapAlerts, regionalAlertGroups, caseValue, clusterCases, inViewport, relocationLink, riskStyle } from "../src/frontend/lib/map/presentation";
 import { risk, type CaseRecord } from "../src/shared/workflow/model";
 import type { DisasterAlert } from "../src/shared/types/intelligence";
 
@@ -41,4 +41,39 @@ test("viewport filtering rejects invalid and out-of-view points", () => {
 test("relocation links preserve and encode the existing record identifier", () => {
   assert.equal(new URL(relocationLink(record), "http://localhost").searchParams.get("habitation"), record.id);
   assert.equal(relocationLink(), "/relocation");
+});
+
+const warning: DisasterAlert = { id: "test-warning", source: "NDMA SACHET", kind: "official", isOfficial: true, hazardType: "flood", title: "Test warning", description: "", severity: "severe", publishedAt: "2026-09-11T00:00:00Z", active: true, priority: "P1", locationMatch: "unknown", affectedArea: "4 districts of Andhra Pradesh" };
+
+test("missing provider polygons produce regional references without inventing hazard coordinates", () => {
+  assert.deepEqual(alertRegions(warning).map(region => region.name), ["Andhra Pradesh"]);
+  assert.equal(alertAnchor(warning), null);
+  assert.equal(warning.latitude, undefined);
+  assert.equal(warning.locationMatch, "unknown");
+  const groups = regionalAlertGroups([warning, { ...warning, id: "second" }, { ...warning, id: "expired", active: false }]);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].records.length, 2);
+});
+
+test("regional references use the affected area, never the issuing office or headline", () => {
+  assert.deepEqual(alertRegions({ ...warning, affectedArea: "Unknown area", issuingAuthority: "Andhra Pradesh SDMA", title: "Alert from Delhi" }), []);
+  assert.deepEqual(alertRegions({ ...warning, affectedArea: "Goaltore" }), []);
+  assert.deepEqual(alertRegions({ ...warning, affectedArea: "Assam and Meghalaya" }).map(region => region.name), ["Assam", "Meghalaya"]);
+  assert.deepEqual(alertRegions({ ...warning, latitude: 15, longitude: 80 }), []);
+  assert.deepEqual(alertRegions({ ...warning, polygons: [[[80, 15], [81, 15], [80, 16], [80, 15]]] }), []);
+});
+
+test("selecting a point keeps nationwide hazards and merges local CAP details", () => {
+  const rss = { ...warning, id: "rss-id", sourceUrl: "https://example.test/cap", active: false };
+  const cap = { ...rss, id: "cap-id", active: true, endTime: "2099-09-12T00:00:00Z" };
+  assert.deepEqual(mapAlerts([warning, rss], [cap], "all"), [warning, cap]);
+  assert.deepEqual(mapAlerts([warning], [], "all"), [warning]);
+  assert.deepEqual(mapAlerts([warning], [], "earthquake"), []);
+  assert.deepEqual(mapAlerts([{ ...warning, active: false }], [], "all"), []);
+});
+
+test("map merging retains precise geometry when local warnings have no boundary", () => {
+  const precise = { ...warning, latitude: 15, longitude: 80 };
+  assert.deepEqual(mapAlerts([precise], [warning], "all"), [precise]);
+  assert.deepEqual(mapAlerts([warning], [precise], "all"), [precise]);
 });

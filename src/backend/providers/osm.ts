@@ -18,13 +18,13 @@ export function parseFacilities(value: unknown, latitude: number, longitude: num
   }).sort((a, b) => a.distanceKm - b.distanceKm).slice(0, 60);
 }
 export async function getNearbyFacilities(latitude: number, longitude: number, radiusKm = 10) {
-  const radius = Math.min(20, Math.max(1, radiusKm));
+  const radius = Math.min(30, Math.max(1, radiusKm));
   const result = await cachedProvider(`osm:${coordinateKey(latitude, longitude)}:${radius}`, "OpenStreetMap", 6 * 60 * 60_000, [] as NearbyFacility[], async () => {
     if (!rateLimit("provider:overpass", 6, 60_000)) throw new ProviderError("Infrastructure query limit reached; retry later");
     const query = `[out:json][timeout:12];nwr(around:${Math.round(radius * 1000)},${latitude.toFixed(2)},${longitude.toFixed(2)})[amenity~"^(hospital|clinic|police|fire_station|shelter|school|community_centre)$"];out center 80;`;
     const options = { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ data: query }), timeoutMs: 12_000 };
     try { return parseFacilities(await fetchJson("https://overpass.private.coffee/api/interpreter", options), latitude, longitude); }
     catch { return parseFacilities(await fetchJson("https://overpass-api.de/api/interpreter", options), latitude, longitude); }
-  }, "© OpenStreetMap contributors · ODbL. Candidate facilities only; none is certified safe or a confirmed evacuation shelter. Capacity is unknown. Search is limited to 20 km and 80 mapped results.");
+  }, "© OpenStreetMap contributors · ODbL. Candidate facilities only; none is certified safe or a confirmed evacuation shelter. Capacity is unknown. Search is limited to 30 km and 80 mapped results.");
   return { ...result, data: result.data.map(site => ({ ...site, distanceKm: haversineDistanceKm(latitude, longitude, site.latitude, site.longitude) })).filter(site => site.distanceKm <= radius).sort((a, b) => a.distanceKm - b.distanceKm) };
 }

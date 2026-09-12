@@ -1,1 +1,2 @@
-import { LiveCorePage } from "@/components/LiveCorePage"; export default function Page(){return <LiveCorePage view="alerts"/>;}
+import { AlertsDashboard } from "@/components/AlertsDashboard";
+export default function Page() { return <AlertsDashboard />; }

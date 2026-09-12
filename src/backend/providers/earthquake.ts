@@ -65,8 +65,9 @@ export function parseEarthquakes(raw: unknown): EarthquakeEvent[] {
 }
 
 /**
- * Fetches real-time earthquakes from USGS for the India region.
- * Source: https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson
+ * Fetches the latest 30 days of earthquakes from the USGS catalog for the
+ * India and near-border region. A bounded catalog query is used so the map is
+ * useful even on days without an event inside the regional box.
  * Revalidates every 60 seconds via cachedProvider.
  *
  * @param location  Optional — when provided, attaches distanceKm and filters by radiusKm.
@@ -82,10 +83,20 @@ export function getEarthquakes(location?: LocationPoint, radiusKm = 300) {
     60_000, // 60-second revalidation
     [],
     async () => {
-      const raw = await fetchJson(
-        "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-        { timeoutMs: 15_000 }
-      );
+      const start = new Date(Date.now() - 30 * 24 * 60 * 60_000).toISOString().slice(0, 10);
+      const query = new URL("https://earthquake.usgs.gov/fdsnws/event/1/query");
+      query.search = new URLSearchParams({
+        format: "geojson",
+        starttime: start,
+        minlatitude: String(INDIA_BOUNDS.minLat),
+        maxlatitude: String(INDIA_BOUNDS.maxLat),
+        minlongitude: String(INDIA_BOUNDS.minLon),
+        maxlongitude: String(INDIA_BOUNDS.maxLon),
+        minmagnitude: "2",
+        orderby: "time",
+        limit: "100",
+      }).toString();
+      const raw = await fetchJson(query, { timeoutMs: 15_000 });
       let events = parseEarthquakes(raw);
 
       if (location) {
@@ -104,6 +115,6 @@ export function getEarthquakes(location?: LocationPoint, radiusKm = 300) {
 
       return events;
     },
-    "USGS real-time earthquake feed. Observed seismic events only, not a prediction or shaking assessment."
+    "USGS earthquake catalog, latest 30 days in the India-region bounding box. Observed seismic events only, not a prediction or shaking assessment."
   );
 }

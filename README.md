@@ -26,7 +26,7 @@ npm start
 
 - `/dashboard`: India map, explicit GPS/manual search, source availability, official alerts, weather, earthquakes, contextual risk indicators, facilities and news.
 - `/nearby`: reported disaster news with hazard and geographic controls. News geography is textual; exact radius matching is unavailable.
-- `/safe-sites`, `/relocation`: India-wide facility candidates and preparation. Distance is straight-line; capacity, shelter designation, road accessibility and safety require confirmation. No allocations are fabricated.
+- `/safe-sites`, `/relocation`: field-evidence relocation workflow with deterministic risk decisions, OSM facility discovery, verified-capacity allocation, and real road-route guidance. OSM facilities remain unverified candidates until field evidence is saved.
 - `/demo`, `/demo/safe-sites`, `/demo/relocation`, `/habitations`, `/simulation`: preserved demo planning with 42 habitations and seven sites. Demo capacities are estimates; map connections are not road routes.
 - `/signup`, `/login`, `/forgot-password`, `/auth/update-password`, `/profile`, `/settings`: accounts, saved locations, language, appearance and notification preferences.
 
@@ -41,6 +41,7 @@ Client components live in `src/frontend/components`; app routes in `src/app`; no
 | [USGS](https://earthquake.usgs.gov/fdsnws/event/1/) | Observed earthquakes in India and surrounding region | None | 5 min |
 | [GDELT DOC](https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/) | Disaster news, last 3 days | None | 15 min |
 | [OpenStreetMap Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API) | Hospitals, schools, community buildings and other facility candidates | None | 6 hours |
+| [OpenRouteService](https://openrouteservice.org/dev/#/api-docs) / [OSRM](https://project-osrm.org/) | Server-side road geometry, duration and directions for verified relocation assignments | Optional ORS server key; OSRM fallback requires none | Per plan request |
 | [geoBoundaries](https://www.geoboundaries.org/) / DataMeet | Historical state/district boundaries and approximate reverse matching | None | 7 days; geocoding 1 day |
 | Open-Meteo / GeoNames | Indian city search | None | 1 day |
 | Existing groundwater CSV | Historical context near selected point | None | Index once per process; results 1 day |
@@ -52,6 +53,12 @@ The app refreshes while visible every five minutes. Public provider requests are
 SACHET ingestion is bounded to the latest 100 RSS entries and a small set of linked CAP documents. Only alerts with verified active periods become current warnings. This is not exhaustive warning coverage. Missing geometry is not invented. State-only alerts receive reduced risk weight. Check official sources even when the list is empty.
 
 Weather is model-derived, not a local station measurement. USGS events do not predict future earthquakes. News is reported context, not a confirmed emergency. Its displayed timestamp is GDELT first-seen time; event/publication time may differ. News radius controls cannot manufacture precise coordinates. Historical boundaries may omit changed districts; coordinates remain usable. Groundwater contributes zero risk points.
+
+## Relocation routing setup
+
+Add `OPENROUTESERVICE_API_KEY` to `.env.local` for the preferred road-routing provider, then restart the app with `npm run dev`. The key is used only by the server. If it is absent or OpenRouteService fails, the planner attempts the public OSRM routing service and clearly reports provider failure instead of drawing a straight line.
+
+The planner starts from saved workspace habitation and site assessments. OpenStreetMap supplies nearby public-facility candidates only; those candidates cannot be recommended until a field officer records current safety/access evidence and real capacity limits. Verified capacity is the lowest recorded land, water, sanitation, or shelter limit minus baseline occupancy and already committed allocations. Active severe/extreme NDMA SACHET geometry is checked when available; absence of an intersection is not a safety guarantee.
 
 ## Supabase setup
 

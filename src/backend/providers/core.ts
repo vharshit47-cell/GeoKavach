@@ -93,11 +93,12 @@ export function isoDate(value: unknown): string | undefined {
 export const coordinateKey = (lat: number, lon: number) => `${lat.toFixed(2)},${lon.toFixed(2)}`;
 
 export function hazardFromText(value: string): import("@/types/intelligence").HazardKind {
+  if (/cloudburst|cloud burst|बादल फट/i.test(value)) return "cloudburst";
   if (/landslide|भूस्खलन/i.test(value)) return "landslide";
   if (/earthquake|भूकंप/i.test(value)) return "earthquake";
   if (/flood|बाढ़/i.test(value)) return "flood";
   if (/cyclone|चक्रवात/i.test(value)) return "cyclone";
   if (/wildfire|forest fire|fire|आग/i.test(value)) return "fire";
-  if (/rain|storm|lightning|cloudburst|avalanche|heat|wind|बारिश|वर्षा|बिजली/i.test(value)) return "extreme-weather";
+  if (/rain|storm|lightning|avalanche|heat|wind|बारिश|वर्षा|बिजली/i.test(value)) return "extreme-weather";
   return "other";
 }

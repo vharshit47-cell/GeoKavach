@@ -1,5 +1,6 @@
 import type { DisasterAlert, EarthquakeEvent, NearbyFacility } from "@/types/intelligence";
 import { risk, type CaseRecord, type SiteRecord } from "@/shared/workflow/model";
+import { INDIA_REGIONS } from "@/config/india";
 
 export const HAZARD_OPTIONS = [
   ["all", "All Hazards"], ["multi", "Multi Hazard"], ["flood", "Flood"],
@@ -45,6 +46,39 @@ export function alertAnchor(alert: DisasterAlert): { latitude: number; longitude
   const ring = alert.polygons?.[0];
   if (!ring?.length) return null;
   return { latitude: ring.reduce((sum, point) => sum + point[1], 0) / ring.length, longitude: ring.reduce((sum, point) => sum + point[0], 0) / ring.length };
+}
+/** Navigation references only: never use these centres for hazard extents or point-risk matching. */
+export function alertRegions(alert: DisasterAlert) {
+  if (alertAnchor(alert)) return [];
+  const area = `${alert.state || ""} ${alert.affectedArea || ""}`.toLocaleLowerCase();
+  return INDIA_REGIONS.filter(region => [region.name, region.hindi].some(name => {
+    const escaped = name.toLocaleLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`(?:^|[^\\p{L}])${escaped}(?:$|[^\\p{L}])`, "u").test(area);
+  }));
+}
+
+export function regionalAlertGroups(alerts: DisasterAlert[]) {
+  const groups = new Map<string, { region: typeof INDIA_REGIONS[number]; records: DisasterAlert[] }>();
+  for (const alert of alerts) {
+    if (!alert.active) continue;
+    for (const region of alertRegions(alert)) {
+      const group = groups.get(region.name) ?? { region, records: [] };
+      group.records.push(alert);
+      groups.set(region.name, group);
+    }
+  }
+  return [...groups.values()];
+}
+
+/** Keep nationwide coverage while adding details discovered for the selected point. */
+export function mapAlerts(national: DisasterAlert[], local: DisasterAlert[], hazard: MapHazard) {
+  const key = (alert: DisasterAlert) => alert.sourceUrl || alert.id;
+  const alerts = new Map(national.map(alert => [key(alert), alert]));
+  for (const alert of local) {
+    const existing = alerts.get(key(alert));
+    if (!existing || !existing.endTime && alert.endTime || !alertAnchor(existing) && alertAnchor(alert)) alerts.set(key(alert), alert);
+  }
+  return [...alerts.values()].filter(alert => alert.active && alertMatches(alert, hazard));
 }
 export function clusterAlerts(alerts: DisasterAlert[]) {
   const order = ["unknown", "low", "moderate", "high", "severe", "extreme"];

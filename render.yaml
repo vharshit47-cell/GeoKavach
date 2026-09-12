@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: geokavach
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://jrshfhkshcmsakfnpaus.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+        value: sb_publishable_mUdA67wYD-BCxUMmhVvjnQ_jlE14OtI
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impyc2hmaGtzaGNtc2FrZm5wYXVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MTc4NDQsImV4cCI6MjEwNDI5Mzg0NH0.KfGjLXJvay7GvTfu1SSeACVoFvNaVJOKLFqA3Va0ZsA
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: OPENROUTESERVICE_API_KEY
+        sync: false
+      - key: TRUST_PROXY
+        value: true

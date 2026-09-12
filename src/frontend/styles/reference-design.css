@@ -225,8 +225,8 @@ select,input,textarea { color:var(--ink); }
 .geo-message{position:absolute;top:58px;left:14px;right:14px;z-index:800;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:6px;font-size:12px;}
 /* Homepage glass overlays keep the landscape visible through navigation. */
 .landing { position:relative; isolation:isolate; }
-.landing .app-header { position:absolute; inset:0 0 auto; background:rgba(5,18,19,.24); border-bottom:1px solid rgba(212,244,233,.16); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
-.landing .terrain-hero { min-height:100svh; }
+.landing .app-header { position:sticky; top:0; z-index:1100; background:rgba(6,20,16,.92); border-bottom:1px solid rgba(212,244,233,.16); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+.landing .terrain-hero { min-height:calc(100svh - 68px); }
 .landing .hero-shade { background:linear-gradient(180deg,rgba(3,13,17,.2),rgba(3,13,17,.12) 35%,rgba(3,13,17,.4) 75%,rgba(3,13,17,.58)); }
 .landing .hero-content { padding-top:130px; text-shadow:0 2px 16px rgba(0,0,0,.65); }
 .landing .hero-actions .secondary-button { background:rgba(6,22,24,.28); border-color:rgba(224,248,240,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }

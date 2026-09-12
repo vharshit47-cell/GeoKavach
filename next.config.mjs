@@ -2,9 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingIncludes: {
-    "/api/groundwater": ["./src/backend/data/groundwater/groundwater_master.csv"],
-    "/api/location-risk": ["./src/backend/data/groundwater/groundwater_master.csv"],
-    "/api/ai/chat": ["./src/backend/data/groundwater/groundwater_master.csv"],
+    "/*": ["./src/backend/data/**/*"],
+    "/api/*": ["./src/backend/data/**/*"],
+    "/api/**": ["./src/backend/data/**/*"],
   },
 };
 

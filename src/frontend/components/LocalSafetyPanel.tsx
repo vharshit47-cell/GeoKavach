@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, LocateFixed, MapPin, Navigation, ShieldCheck } from "lucide-react";
 import { LocationSafetyManager, useLocationSafety } from "./LocationSafetyManager";
 import { usePreferences } from "./AppPreferences";
@@ -21,9 +21,12 @@ function LocalResults() {
     <article><h3><Navigation size={18} />Relocation options</h3>{workflow.loading ? <p>Checking assessed relocation sites…</p> : sites.length ? sites.map(({ site, distanceKm, available }) => <a className="local-place" key={site.id} href={directions(location, site)} target="_blank" rel="noreferrer"><span><strong>{site.name}</strong><small>{distanceKm.toFixed(1)} km · {available} places available</small></span><ArrowUpRight size={15} /></a>) : <p>{workflow.error ? "Relocation records could not be loaded." : "No current, verified relocation sites with available capacity are accessible within 50 km."}</p>}<small>Confirm destination and route with authorities before travel. Distances are straight-line estimates.</small><Link href="/relocation">Review relocation sites <ArrowUpRight size={14} /></Link></article>
   </div>;
 }
-export function LocalSafetyPanel() {
+export function LocalSafetyPanel({ showResults = true }: { showResults?: boolean }) {
   const { location, locating, locationMessage, locateOnce } = useLocationSafety();
   const { t } = usePreferences();
   const [edit, setEdit] = useState(false);
-  return <section className="local-safety" aria-label="Safety near your location"><div className="local-safety-heading"><div><span className="safety-eyebrow">YOUR LOCAL SAFETY BRIEF</span><h2><MapPin size={20} />{locating ? "Detecting your location…" : location ? location.name || location.district || location.state || `${location.latitude.toFixed(3)}, ${location.longitude.toFixed(3)}` : "Find guidance for your area"}</h2><p>{location ? "Local warnings, nearby help and relocation options in one place." : locationMessage ? t(locationMessage) : "Allow location access, or choose a place manually."}</p></div><div className="local-safety-actions"><button onClick={locateOnce} disabled={locating}><LocateFixed size={15} />{locating ? "Locating…" : "Use my location"}</button><button onClick={() => setEdit(!edit)} aria-expanded={edit}>{edit ? "Close location search" : "Choose location"}</button></div></div>{edit && <LocationSafetyManager />}{location && <LocalResults />}</section>;
+  useEffect(() => {
+    if (location) setEdit(false);
+  }, [location]);
+  return <section className="local-safety" aria-label="Safety near your location"><div className="local-safety-heading"><div><span className="safety-eyebrow">YOUR LOCAL SAFETY BRIEF</span><h2><MapPin size={20} />{locating ? "Detecting your location…" : location ? location.name || location.district || location.state || `${location.latitude.toFixed(3)}, ${location.longitude.toFixed(3)}` : "Find guidance for your area"}</h2><p>{location ? "Local warnings, nearby help and relocation options in one place." : locationMessage ? t(locationMessage) : "Allow location access, or choose a place manually."}</p></div><div className="local-safety-actions"><button onClick={locateOnce} disabled={locating}><LocateFixed size={15} />{locating ? "Locating…" : "Use my location"}</button><button onClick={() => setEdit(!edit)} aria-expanded={edit}>{edit ? "Close location search" : "Choose location"}</button></div></div>{edit && <LocationSafetyManager />}{location && showResults && <LocalResults />}</section>;
 }

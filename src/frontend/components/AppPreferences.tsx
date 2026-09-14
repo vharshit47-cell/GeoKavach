@@ -77,7 +77,7 @@ function Preferences({ children }: { children: ReactNode }) {
 }
 
 export function AppPreferencesProvider({ children }: { children: ReactNode }) {
-  return <ThemeProvider attribute="class" defaultTheme="dark" enableSystem storageKey="suraksha-theme" disableTransitionOnChange><Preferences>{children}</Preferences></ThemeProvider>;
+  return <ThemeProvider attribute="class" defaultTheme="light" enableSystem storageKey="suraksha-theme" disableTransitionOnChange><Preferences>{children}</Preferences></ThemeProvider>;
 }
 export function usePreferences() {
   const context = useContext(Context);

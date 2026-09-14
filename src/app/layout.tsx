@@ -6,6 +6,7 @@ import "@/frontend/styles/intelligence.css";
 import "@/frontend/styles/decision-support.css";
 import "@/frontend/styles/reference-design.css";
 import "@/frontend/styles/safety-experience.css";
+import "@/frontend/styles/professional-ui.css";
 import { AppPreferencesProvider } from "@/components/AppPreferences";
 import { LocationSafetyProvider } from "@/components/LocationSafetyManager";
 import { EmergencyHelp } from "@/components/EmergencyHelp";
